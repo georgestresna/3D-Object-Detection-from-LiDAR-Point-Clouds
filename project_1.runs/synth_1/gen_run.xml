@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="synth_1" LaunchPart="xc7a12ticsg325-1L" LaunchTime="1765994094" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/tb_lidar_top.dcp">
+  <File Type="PA-TCL" Name="lidar_top.tcl"/>
+  <File Type="RDS-PROPCONSTRS" Name="lidar_top_drc_synth.rpt"/>
+  <File Type="REPORTS-TCL" Name="lidar_top_reports.tcl"/>
+  <File Type="RDS-RDS" Name="lidar_top.vds"/>
+  <File Type="RDS-UTIL" Name="lidar_top_utilization_synth.rpt"/>
+  <File Type="RDS-UTIL-PB" Name="lidar_top_utilization_synth.pb"/>
+  <File Type="RDS-DCP" Name="lidar_top.dcp"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="lidar_top_timing_summary_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="lidar_top_timing_summary_synth.pb"/>
+  <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
+    <Filter Type="Srcs"/>
+    <File Path="$PSRCDIR/sources_1/imports/New Project/rtl/bev_mapper.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../New Project/rtl/bev_mapper.v"/>
+        <Attr Name="ImportTime" Val="1765978291"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/New Project/rtl/occupancy_grid.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../New Project/rtl/occupancy_grid.v"/>
+        <Attr Name="ImportTime" Val="1765978302"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/New Project/rtl/threshold_filter.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../New Project/rtl/threshold_filter.v"/>
+        <Attr Name="ImportTime" Val="1765978296"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/New Project/rtl/lidar_top.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../New Project/rtl/lidar_top.v"/>
+        <Attr Name="ImportTime" Val="1765978308"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/New Project/sim/tb_lidar_top.v">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../New Project/sim/tb_lidar_top.v"/>
+        <Attr Name="ImportTime" Val="1765978315"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="DesignMode" Val="RTL"/>
+      <Option Name="TopModule" Val="lidar_top"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
+    <Filter Type="Constrs"/>
+    <Config>
+      <Option Name="ConstrsType" Val="XDC"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
+    <Filter Type="Utils"/>
+    <File Path="$PSRCDIR/utils_1/imports/synth_1/tb_lidar_top.dcp">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedInSteps" Val="synth_1"/>
+        <Attr Name="AutoDcp" Val="1"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
+      <Desc>Vivado Synthesis Defaults</Desc>
+    </StratHandle>
+    <Step Id="synth_design"/>
+  </Strategy>
+</GenRun>
