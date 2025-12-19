@@ -165,5 +165,5 @@ Reprezintă o bază solidă pentru sisteme de percepție în robotică și condu
 ---
 
 **Autor:**  
-Proiect realizat în cadrul disciplinei Arhitectura Calculatoarelor || Ingineria Sistemelor
+Proiect realizat în cadrul disciplinei Arhitectura Calculatoarelor || Ingineria Sistemelor </br>
 Realizat de Stresna George, Antonescu Cristian-Elisei, Popa-Galita Matei-Constantin
