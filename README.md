@@ -1,138 +1,169 @@
-“This project demonstrates a Verilog-based LiDAR obstacle identification pipeline using BEV projection and occupancy grids. The design is synthesizable and intended for FPGA-based perception systems.”
+# Proiect FPGA – Identificare Obstacole din Date LiDAR (Verilog) || 3D Object Detection From LiDAR Point Clouds
 
-“Implementation errors related to an empty design were resolved by ensuring that the synthesizable LiDAR top module was used for synthesis and implementation, while the testbench was restricted to simulation only.”
+## Descriere generală
 
-Perfect — that screenshot actually tells me **everything is working**.
+Acest proiect implementează un **sistem hardware descris în Verilog** pentru **identificarea obstacolelor din date LiDAR 3D**, folosind o reprezentare **Bird’s-Eye View (BEV)** și o **hartă de ocupație (occupancy grid)**.
 
-What you’re seeing is **Vivado’s placed design view**, and for a **course project**, this is exactly what a successful outcome looks like.
-
-Let me explain plainly what this means and what you should (and should not) worry about.
+Proiectul este realizat în scop **academic**, fiind destinat **simulării și sintezei în Vivado**, fără implementare pe o placă FPGA fizică. Designul este orientat pe procesare **streaming**, similar sistemelor reale utilizate în robotică și conducere autonomă.
 
 ---
 
-## What that image is
+## Obiectivul proiectului
 
-That is the **Device / Placed Design view** in Vivado.
-
-Key indicators that things are correct:
-
-* You see **logic blocks placed inside the device outline**
-* You see **BRAM columns and routing channels**
-* You see **hierarchical regions** (multiple rectangular areas)
-* Nothing is empty or blank
-* No placement error dialog popped up
-
-This means:
-
-> ✅ Vivado successfully synthesized and placed your design
-> ✅ Your top module is correct
-> ✅ The design is *not* empty
-> ✅ Your earlier errors are resolved
+Scopul proiectului este:
+- procesarea punctelor LiDAR 3D în hardware,
+- identificarea regiunilor care conțin obstacole,
+- construirea unei hărți 2D de obstacole utilizabile ulterior în software.
 
 ---
 
-## Why it looks “empty” or strange (normal)
+## Fluxul de procesare
 
-Your design is **very small**:
+Pentru fiecare punct LiDAR de intrare `(x, y, z)`:
 
-* A few registers
-* Some comparators
-* A small inferred RAM
+1. **Filtrare sol** – eliminarea punctelor cu înălțime mică
+2. **Proiecție BEV** – maparea coordonatelor 3D într-o grilă 2D
+3. **Hartă de ocupație** – marcarea celulelor ocupate
+4. **Semnal obstacol** – indică detectarea unui obstacol
 
-So Vivado:
+Fluxul logic este:<br>
 
-* Packs logic tightly
-* Uses only a tiny fraction of the FPGA
-* Leaves most of the chip unused
+LiDAR (x, y, z)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+Filtru de sol (threshold)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+Proiecție BEV<br>
+&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+Occupancy Grid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+Detectare obstacol
 
-That’s why you see **lots of dark space**.
 
-This is **not a problem**.
-It’s exactly what you expect for a minimal LiDAR pipeline.
-
----
-
-## What each visible region roughly corresponds to
-
-Based on your modules:
-
-* One region = `occupancy_grid` (BRAM inferred)
-* One region = `bev_mapper`
-* One region = `threshold_filter`
-* Some glue logic = `lidar_top`
-
-Vivado doesn’t label them clearly unless you enable hierarchy coloring, but the structure matches your design.
 
 ---
 
-## Important: what this proves (academically)
+## Descrierea modulelor Verilog
 
-You can now truthfully say:
+### `lidar_top.v`
+Modulul principal (top-level) care conectează toate componentele sistemului.
 
-* The design is **synthesizable**
-* The design is **placeable**
-* The design maps to FPGA resources
-* The project opens cleanly in Vivado
-* Simulation + synthesis + placement all succeed
+**Intrări:**
+- `clk` – semnal de ceas
+- `valid` – indică un punct LiDAR valid
+- `x`, `y`, `z` – coordonate LiDAR (fixed-point)
 
-That’s more than many course projects achieve.
-
----
-
-## What you should NOT do now
-
-❌ Do NOT chase timing closure
-❌ Do NOT add random constraints
-❌ Do NOT worry about utilization being “too small”
-❌ Do NOT try to optimize routing
-
-None of that is required or expected.
+**Ieșiri:**
+- `obstacle` – semnal activ atunci când un obstacol este detectat
 
 ---
 
-## What to capture for submission (important)
+### `threshold_filter.v`
+Modul de **filtrare a solului**.
 
-Before closing Vivado, grab:
+- Punctele cu `z` sub un prag prestabilit sunt considerate sol
+- Punctele peste prag sunt considerate obstacole
 
-1. **Screenshot of this device view** (you already did 👍)
-2. **Synthesis utilization report**
-3. **Simulation waveform showing `obstacle` toggling**
-
-Those three together are gold for a report.
+Aceasta este o metodă simplificată, dar realistă, utilizată frecvent în pipeline-uri LiDAR reale.
 
 ---
 
-## One sentence you can put in your report
+### `bev_mapper.v`
+Modul de **proiecție Bird’s-Eye View**.
 
-Use this idea:
-
-> “The proposed LiDAR obstacle identification pipeline was successfully synthesized and placed in Vivado, demonstrating that the Verilog design is FPGA-realizable even without targeting a specific development board.”
-
-That sentence alone tells the grader you know what you’re doing.
-
----
-
-## You are basically DONE
-
-At this point:
-
-* Your repo structure is correct
-* Your Vivado project opens
-* Your Verilog works
-* Your errors are resolved
-* You have visual proof
-
-Anything else is **extra credit**.
+- Convertește coordonatele `(x, y)` în coordonate discrete `(gx, gy)`
+- Spațiul este discretizat într-o grilă 2D
+- Permite procesare hardware eficientă
 
 ---
 
-## Optional next steps (only if you want)
+### `occupancy_grid.v`
+Implementează **harta de ocupație 2D**.
 
-If you want to make it slightly more impressive without breaking anything, I can help you add:
+- Fiecare celulă reprezintă o zonă din spațiul real
+- Dacă un punct de obstacol ajunge într-o celulă, aceasta este marcată ca ocupată
+- Harta este stocată intern (memorie inferată – BRAM)
 
-* A **frame reset signal**
-* A **bounding-box output (min/max gx, gy)**
-* A **simple cluster counter**
-* A **clean README + block diagram**
+---
 
-Say the word — but if your deadline is close, **stop here and submit**.
+## Testbench și simulare
+
+### `tb_lidar_top.v`
+
+Testbench-ul:
+- Simulează un **cadru LiDAR static**
+- Trimite puncte de sol și puncte de obstacol
+- Conține **două obstacole distincte**, de dimensiuni diferite
+- Trimite punctele secvențial, un punct per ciclu de ceas
+
+Testbench-ul joacă rolul unui **senzor LiDAR virtual**.
+
+---
+
+## Compatibilitate cu dataset-uri reale (ex: KITTI)
+
+Designul hardware:
+- NU încarcă direct fișiere `.bin` KITTI
+- Este însă **compatibil la nivel de flux de date**
+
+Într-un scenariu real:
+1. Datele KITTI sunt citite în software (Python/C++)
+2. Convertite în format fixed-point
+3. Transmise punct cu punct către hardware
+
+Proiectul implementează **etapa de preprocesare** întâlnită în majoritatea sistemelor moderne de detecție 3D.
+
+---
+
+## Ce face și ce NU face proiectul
+
+### Face:
+- Identifică regiuni cu obstacole
+- Construiește o hartă BEV de ocupație
+- Procesează date LiDAR în timp real (streaming)
+
+### NU face:
+- Clasificare de obiecte
+- Detectare bounding box-uri 3D
+- Tracking
+- Machine Learning
+
+Aceste funcționalități pot fi adăugate ulterior, dar nu sunt necesare pentru scopul proiectului.
+
+---
+
+## Utilizare în Vivado
+
+- Fișierele `.v` → **Design Sources**
+- Testbench-ul → **Simulation Sources**
+- Nu sunt necesare fișiere `.xdc`
+- Proiectul poate fi:
+  - Simulat
+  - Sintetizat
+  - Analizat din punct de vedere al resurselor
+
+---
+
+## Concluzie
+
+Proiectul demonstrează:
+- procesarea hardware a datelor LiDAR,
+- utilizarea reprezentării Bird’s-Eye View,
+- construcția unei hărți de obstacole în Verilog,
+- un design streaming, realist și sintetizabil.
+
+Reprezintă o bază solidă pentru sisteme de percepție în robotică și conducere autonomă și este potrivit ca **proiect academic FPGA**.
+
+---
+
+## Extensii posibile
+
+- Resetare per cadru LiDAR
+- Gruparea celulelor ocupate (clustering)
+- Estimare bounding box-uri
+- Integrarea unui accelerator neural
+
+---
+
+**Autor:**  
+Proiect realizat în cadrul disciplinei Arhitectura Calculatoarelor || Ingineria Sistemelor
+Realizat de Stresna George, Antonescu Cristian-Elisei, Popa-Galita Matei-Constantin
